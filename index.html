@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f5f5f5;
+        font-family: Arial, sans-serif;
+      }
+      #timer {
+        font-size: 48px;
+        color: #333;
+        margin-bottom: 20px;
+      }
+      .input-container,
+      .button-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .button,
+      .input {
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+      }
+      .button {
+        color: #fff;
+        background-color: #007bff;
+        cursor: pointer;
+      }
+      .button:disabled {
+        background-color: #999;
+      }
+      .input {
+        width: 100px;
+        text-align: center;
+      }
+    </style>
+    <title>Custom Countdown Timer</title>
+  </head>
+  <body>
+    <div id="timer">10:00</div>
+    <div class="input-container">
+      <input
+        type="number"
+        id="timeInput"
+        class="input"
+        min="1"
+        placeholder="Minutes"
+      />
+    </div>
+    <div class="button-container">
+      <button id="setButton" class="button">Set Timer</button>
+      <button id="startButton" class="button" disabled>Start</button>
+      <button id="stopButton" class="button" disabled>Stop</button>
+    </div>
+
+    <script>
+      let time = 600; // Default time in seconds (10 minutes)
+      let timerInterval;
+      const timerElement = document.getElementById("timer");
+      const timeInput = document.getElementById("timeInput");
+      const setButton = document.getElementById("setButton");
+      const startButton = document.getElementById("startButton");
+      const stopButton = document.getElementById("stopButton");
+
+      function updateTimerDisplay() {
+        const minutes = Math.floor(time / 60);
+        const seconds = time % 60;
+        timerElement.textContent = `${minutes}:${
+          seconds < 10 ? "0" : ""
+        }${seconds}`;
+      }
+
+      function setTimer() {
+        const minutes = parseInt(timeInput.value);
+        if (!isNaN(minutes) && minutes > 0) {
+          time = minutes * 60;
+          updateTimerDisplay();
+          startButton.disabled = false;
+          stopButton.disabled = true;
+          clearInterval(timerInterval);
+        }
+      }
+
+      function updateTimer() {
+        const minutes = Math.floor(time / 60);
+        const seconds = time % 60;
+        timerElement.textContent = `${minutes}:${
+          seconds < 10 ? "0" : ""
+        }${seconds}`;
+        time--;
+
+        if (time < 0) {
+          clearInterval(timerInterval);
+          timerElement.textContent = "Time's up!";
+        }
+      }
+
+      function startTimer() {
+        startButton.disabled = true;
+        stopButton.disabled = false;
+        timerInterval = setInterval(updateTimer, 1000);
+      }
+
+      function stopTimer() {
+        startButton.disabled = false;
+        stopButton.disabled = true;
+        clearInterval(timerInterval);
+      }
+
+      setButton.addEventListener("click", setTimer);
+      startButton.addEventListener("click", startTimer);
+      stopButton.addEventListener("click", stopTimer);
+
+      updateTimerDisplay(); // Initial display update
+    </script>
+  </body>
+</html>
